@@ -1,0 +1,39 @@
+# cat main-tower-example.yaml | linkerd inject - | kubectl apply -f -
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-tower
+  labels:
+    app: main-tower
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-tower
+  template:
+    metadata:
+      labels:
+        app: main-tower
+    spec:
+      containers:
+      - name: main-tower
+        image: apolzek/main-tower-example
+        ports:
+        - containerPort: 5000
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-tower
+spec:
+  selector:
+    app: main-tower
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

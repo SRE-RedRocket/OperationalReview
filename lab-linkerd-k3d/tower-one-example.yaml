@@ -1,0 +1,34 @@
+# cat tower-one-example.yaml | linkerd inject - | kubectl apply -f -
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tower-one
+  labels:
+    app: tower-one
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tower-one
+  template:
+    metadata:
+      labels:
+        app: tower-one
+    spec:
+      containers:
+      - name: tower-one
+        image: apolzek/tower-one-example
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tower-one
+spec:
+  selector:
+    app: tower-one
+
